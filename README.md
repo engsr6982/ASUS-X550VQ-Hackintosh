@@ -13,3 +13,13 @@
 | Network   | Realtek PCIe GbE Family Controller (10EC-8168)   |
 | Audio     | Realtek High Definition Audio                    |
 | Storage   | 120Gb(KINGSTON SA400S37120G) + FORESEE 512GB SSD |
+
+## BIOS Settings
+
+| BIOS Setting | Value    |
+| ------------ | -------- |
+| Security     | UEFI     |
+| SATA Mode    | AHCI     |
+| Secure Boot  | Disabled |
+| VT-d         | Disabled |
+| Launch CSM   | Disabled |
