@@ -1,0 +1,3 @@
+# BigSur - Hackintosh
+
+Tested OS: BigSur 11.7.11 (Only enter rec)
