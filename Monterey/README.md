@@ -29,10 +29,13 @@ OS Version: 12.7.6 (21H1320)
 
 - HDMI、VGA interface
 - SD card reader
+- 3.5mm audio jack
 
 ### Device that can't be driven
 
 - NVIDIA GeForce 940MX
+
+## Fn key
 
 | Fn key              | Function                                | Status                                                   |
 | ------------------- | --------------------------------------- | -------------------------------------------------------- |
