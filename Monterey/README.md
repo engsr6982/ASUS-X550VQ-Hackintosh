@@ -12,7 +12,7 @@ OS Version: 12.7.6 (21H1320)
 - USB 3.0 x2, USB 2.0 x1
 - Intel Wireless network card (WIFI)
 - RTL wired network card
-- Microphone
+- RTL Audio (Internal Speakers & Microphone)
 - Touchpad (left click, right click)
 - Camera (USB protocol)
 - Battery
@@ -22,7 +22,6 @@ OS Version: 12.7.6 (21H1320)
 ### Unresolved device
 
 - Touchpad (gesture)
-- RTL Audio (speeakers, microphone)
 - Sleep (USB devices still powered on)
 
 ### UnTested device
@@ -59,40 +58,40 @@ OS Version: 12.7.6 (21H1320)
 
 ## Note
 
-### About Audio Layout-ID
+### About Audio Layout-ID & Permanent Speaker Fix
 
-#### Pristine (original) environment
+Through strict cross-referencing between the motherboard's codec dump and the AppleALC source code (`Platforms27.xml`), **`layout-id=27`** is the only layout that perfectly matches the physical routing of the ASUS X550VQ.
 
-| Layout ID | Result - has sound | Result - microphone picking up |
-| --------- | ------------------ | ------------------------------ |
-| 3         | ❌                 | UnTested                       |
-| 27        | ❌                 | ✔                              |
-| 28        | ❌                 | UnTested                       |
-| 30        | ✔                  | ❌                             |
-| 13        | ❌                 | ❌                             |
-| 11        | ❌                 | ❌                             |
-| 21        | ❌                 | ❌                             |
-| 99        | ❌                 | ❌                             |
+#### 1. Why `layout-id=27` is the perfect match?
 
-#### apply HEPT、IRQ、RTC、TIMR patches and Virtual Sound Card
+*   **Hex to Decimal Node Mapping from Codec Dump:**
+    *   **Speaker (内放喇叭):** Node `0x14` (Dec **20**) -> Mixer `0x0c` (12) -> DAC `0x02` (2)
+    *   **Headphone (耳机孔):** Node `0x21` (Dec **33**) -> Mixer `0x0d` (13) -> DAC `0x03` (3)
+    *   **Internal Mic (内置麦克风):** Node `0x1b` (Dec **27**) -> Mixer `0x22` (34) -> ADC `0x09` (9)
+    *   **Headset Mic (耳麦麦克风):** Node `0x19` (Dec **25**) -> Mixer `0x23` (35) -> ADC `0x08` (8)
 
-> full-patches.diff
+*   **DSP Routing in `Platforms27.xml` (PathMapID 255):**
+    *   **Output 1:** `20 -> 12 -> 2` (Perfectly matches Speaker)
+    *   **Output 2:** `33 -> 13 -> 3` (Perfectly matches Headphone)
+    *   **Input 1:** `8 -> 35 -> 25` (Perfectly matches Headset Mic)
+    *   **Input 2:** `9 -> 34 -> 27` (Perfectly matches Internal Mic)
 
-| Layout ID | Result - has sound | Result - microphone picking up |
-| --------- | ------------------ | ------------------------------ |
-| 27        | ❌                 | ✔                              |
-| 30        | ❌                 | ❌                             |
+By contrast, other layouts like `layout-id=30` point the microphone path to `Node 18` (0x12), which is an unconnected (`[N/A] Line Out`) dead node on this machine, resulting in a non-functional microphone.
 
-### only apply HEPT、IRQ、RTC、TIMR patches
+---
 
-| Layout ID | Result - has sound | Result - microphone picking up |
-| --------- | ------------------ | ------------------------------ |
-| 30        | ❌                 | ❌                             |
-| 27        | ❌                 | ✔                              |
-| 66        | ❌                 | ❌                             |
-| 21        | ❌                 | ❌                             |
+#### 2. The Root Cause of Silent Speakers (ALC255/3234 Deep Sleep)
 
-### Force enable audio speeakers
+Although Layout 27 has the perfect hardware routing paths, the Realtek ALC255 Class-D speaker amplifier (Node `0x14`) and clock gate (Node `0x10`) default to a deep-sleep/mute state on cold boot (and are aggressively cut by the Windows driver on shutdown).
+
+Under the default/silent state of Layout 27, querying the active coefficients on NID `0x20` yields:
+*   **Index `0x45` (Amp Control) = `0xd089`** (Bit 15 is `1` = Speaker Amplifier hardware-muted)
+*   **Index `0x10` (Clock Gate) = `0x0220`** (Bit 9 is `1` = Audio stream clock muted/cut)
+
+To wake up the physical amplifier, the following values must be forced into the codec:
+*   Clear Bit 15 on **Index `0x45`** to `0` (set data to **`0x5089`**)
+*   Clear Bit 9 on **Index `0x10`** to `0` (set data to **`0x0020`**)
+*   Enable EAPD on **Node `0x14`** (send EAPD enable command **`01470C02`**)
 
 ```bash
 sudo ./alc-verb 0x20 0x500 0x45
@@ -101,41 +100,50 @@ sudo ./alc-verb 0x20 0x500 0x10
 sudo ./alc-verb 0x20 0x400 0x0020
 ```
 
-### Why `layout-id=27` is the perfect match? (Hardware & Source Code Analysis)
-
-Through strict cross-referencing between the motherboard's codec dump and the AppleALC source code (`Platforms27.xml`), `layout-id=27` is the only layout that perfectly matches the physical routing of the ASUS X550VQ.
-
-**1. Hex to Decimal Node Mapping from Codec Dump:**
-
-- **Speaker (内放喇叭):** Node `0x14` (Dec **20**) -> Mixer `0x0c` (12) -> DAC `0x02` (2)
-- **Headphone (耳机孔):** Node `0x21` (Dec **33**) -> Mixer `0x0d` (13) -> DAC `0x03` (3)
-- **Internal Mic (内置麦克风):** Node `0x1b` (Dec **27**) -> Mixer `0x22` (34) -> ADC `0x09` (9)
-- **Headset Mic (耳麦麦克风):** Node `0x19` (Dec **25**) -> Mixer `0x23` (35) -> ADC `0x08` (8)
-
-**2. DSP Routing in `Platforms27.xml` (PathMapID 255):**
-
-- **Output 1:** `20 -> 12 -> 2` (Perfectly matches Speaker)
-- **Output 2:** `33 -> 13 -> 3` (Perfectly matches Headphone)
-- **Input 1:** `8 -> 35 -> 25` (Perfectly matches Headset Mic)
-- **Input 2:** `9 -> 34 -> 27` (Perfectly matches Internal Mic)
-
-By contrast, other layouts like `layout-id=30` point the microphone path to `Node 18` (0x12), which is an unconnected (`[N/A] Line Out`) dead node on this specific machine, resulting in a non-functional microphone.
+*(Note: Layout 30 natively initializes these registers, which is why it had sound, but physically points the microphone to a dead node. Layout 27 has the correct routing but lacks the default initialization verbs).*
 
 ---
 
-### Archive Record: The Index Mismatch Anomaly in Layout 27
+#### 3. The Elegant Solution (Native AppleALC Patching)
 
-Although `layout-id=27` works perfectly in practice, there is a known indexing anomaly in the AppleALC source code for this layout that is worth documenting:
+Instead of using background daemons (like ALCPlugFix) or manual `alc-verb` terminal commands, we can inject these custom initialization machines code verbs directly into the pre-compiled `AppleALC.kext`'s configuration block.
 
-In `layout27.xml`, the outputs are declared as:
+**Step-by-step Patching:**
+1. Open `AppleALC.kext/Contents/Info.plist` with a plist editor.
+2. Search for `283902549` (Decimal CodecID for ALC255) under `IOKitPersonalities -> as.vit9696.AppleALC -> HDAConfigDefault`.
+3. Locate the dictionary block containing `<key>LayoutID</key> <integer>27</integer>`.
+4. Replace the entire `<dict>` configuration block with the following patched XML:
 
-1. `Headphone` (Index 0)
-2. `IntSpeaker` (Index 1)
+```xml
+<dict>
+	<key>AFGLowPowerState</key>
+	<data>
+	AwAAAA==
+	</data>
+	<key>Codec</key>
+	<string>ALC255 for Asus X556UA m-dudarev</string>
+	<key>CodecID</key>
+	<integer>283902549</integer>
+	<key>ConfigData</key>
+	<data>
+	AUccEAFHHQEBRx4XAUcfkAGXHCABlx0QAZce
+	gQGXHwQCFxwgAhcdEAIXHiECFx8EAbccMAG3
+	HQEBtx6gAbcfkAFHDAgCBQAQAgQAIAgFAEUC
+	BFCJAUcMAg==
+	</data>
+	<key>FuncGroup</key>
+	<integer>1</integer>
+	<key>LayoutID</key>
+	<integer>27</integer>
+	<key>WakeConfigData</key>
+	<data>
+	AgUAEAIEACACACACBQBFAgRQiQFHDAI=
+	</data>
+	<key>WakeVerbReinit</key>
+	<true/>
+</dict>
+```
 
-However, in `Platforms27.xml`, the DSP paths are ordered as:
+5. Save the plist, replace the kext in your OpenCore EFI/OC/Kexts, and Reset NVRAM on your next boot.
 
-1. Node `20` (Speaker)
-2. Node `33` (Headphone)
-
-This creates an "Index Mismatch" where the XML definition ties the Headphone name to the Speaker node, and vice versa.
-**Why it still works:** macOS CoreAudio is smart enough to rely on the injected `PinConfigs` (`ConfigData`) rather than strictly following the XML naming strings. Since the `PinConfigs` correctly define Node 20 as an internal speaker and Node 33 as a headphone, the system resolves the routing dynamically.
+This natively forces AppleALC to clear the deep-sleep register blocks at the kernel level upon boot and wake, ensuring 100% stable, out-of-the-box native audio and microphone on macOS Monterey without any auxiliary software.
