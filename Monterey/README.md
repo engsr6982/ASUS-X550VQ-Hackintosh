@@ -9,7 +9,8 @@ OS Version: 12.7.6 (21H1320)
 - Intel HD Graphics 530
 - Built-in display (Control Center adjustable brightness)
 - SATA SSD x2
-- USB 3.0 x2, USB 2.0 x1
+- USB 3.0 x1 (Port5 & 21), USB 2.0 x1 
+	- The USB 3.0 ports near the 3.5mm headphone jack on my computer are broken (ports 6 and 22)
 - Intel Wireless network card (WIFI)
 - RTL wired network card
 - RTL Audio (Internal Speakers & Microphone)
