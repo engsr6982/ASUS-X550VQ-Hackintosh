@@ -23,7 +23,7 @@ OS Version: 12.7.6 (21H1320)
 ### Unresolved device
 
 - Touchpad (gesture)
-- Sleep (USB devices still powered on)
+- No sound from the speakers after waking up from sleep
 
 ### UnTested device
 
