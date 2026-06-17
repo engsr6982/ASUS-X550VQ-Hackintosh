@@ -1,12 +1,12 @@
-# Monterey
+# Ventura
 
-OS Version: 12.7.6 (21H1320)
+OS Version: 13.7.8 (22H730)
 
 ## Hardware
 
 ### Device with normal driver
 
-- Intel HD Graphics 530
+- Intel HD Graphics 530 (mock Intel HD Graphics 630)
 - Built-in display (Control Center adjustable brightness)
 - SATA SSD x2
 - USB 3.0 x1 (Port5 & 21), USB 2.0 x1
@@ -17,15 +17,16 @@ OS Version: 12.7.6 (21H1320)
 - Battery
 - Intel Power Management
 - Intel Bluetooth
+- RTL Audio (Internal Speakers & Microphone)
+- Touchpad (left click, right click)
 
 ### Unresolved device
 
-### UnTested device
-
-- RTL Audio (Internal Speakers & Microphone)
-- Touchpad (left click, right click)
 - Touchpad (gesture)
 - No sound from the speakers after waking up from sleep
+
+### UnTested device
+
 - HDMI、VGA interface
 - SD card reader
 - 3.5mm audio jack
