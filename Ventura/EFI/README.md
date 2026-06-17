@@ -6,10 +6,6 @@ OS Version: 12.7.6 (21H1320)
 
 ### Device with normal driver
 
-### Unresolved device
-
-### UnTested device
-
 - Intel HD Graphics 530
 - Built-in display (Control Center adjustable brightness)
 - SATA SSD x2
@@ -17,12 +13,17 @@ OS Version: 12.7.6 (21H1320)
   - The USB 3.0 ports near the 3.5mm headphone jack on my computer are broken (ports 6 and 22)
 - Intel Wireless network card (WIFI)
 - RTL wired network card
-- RTL Audio (Internal Speakers & Microphone)
-- Touchpad (left click, right click)
 - Camera (USB protocol)
 - Battery
 - Intel Power Management
 - Intel Bluetooth
+
+### Unresolved device
+
+### UnTested device
+
+- RTL Audio (Internal Speakers & Microphone)
+- Touchpad (left click, right click)
 - Touchpad (gesture)
 - No sound from the speakers after waking up from sleep
 - HDMI、VGA interface

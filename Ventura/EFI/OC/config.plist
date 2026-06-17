@@ -607,7 +607,7 @@
                     <key>BundlePath</key>
                     <string>UTBMap.kext</string>
                     <key>Comment</key>
-                    <string>V1.0</string>
+                    <string>V1.1</string>
                     <key>Enabled</key>
                     <true/>
                     <key>ExecutablePath</key>
@@ -1092,7 +1092,7 @@
                 <key>AdviseFeatures</key>
                 <false/>
                 <key>MLB</key>
-                <string>C02604401GUHCF9JA</string>
+                <string>C02715270GUJ1JHJA</string>
                 <key>MaxBIOSVersion</key>
                 <false/>
                 <key>ProcessorType</key>
@@ -1104,11 +1104,11 @@
                 <key>SystemMemoryStatus</key>
                 <string>Auto</string>
                 <key>SystemProductName</key>
-                <string>MacBookPro13,3</string>
+                <string>MacBookPro14,3</string>
                 <key>SystemSerialNumber</key>
-                <string>C02R503SGTFN</string>
+                <string>C02TKYY3HTD5</string>
                 <key>SystemUUID</key>
-                <string>777037BA-31FA-4E09-BC46-28340C88BB01</string>
+                <string>C362E08B-8F70-47E8-9467-C2BAF7AD0022</string>
             </dict>
             <key>UpdateDataHub</key>
             <true/>
