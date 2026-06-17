@@ -3021,9 +3021,7 @@
 					<integer>283902549</integer>
 					<key>ConfigData</key>
 					<data>
-					AUccEAFHHQEBRx4XAUcfkAGXHCABlx0QAZce
-					gQGXHwQCFxwgAhcdEAIXHiECFx8EAbccMAG3
-					HQEBtx6gAbcfkAFHDAI=
+					AUccEAFHHQEBRx4XAUcfkAGXHCABlx0QAZcegQGXHwQCFxwgAhcdEAIXHiECFx8EAbccMAG3HQEBtx6gAbcfkAFHDAgCBQAQAgQAIAgFAEUCBFCJAUcMAg==
 					</data>
 					<key>FuncGroup</key>
 					<integer>1</integer>
@@ -3031,7 +3029,7 @@
 					<integer>27</integer>
 					<key>WakeConfigData</key>
 					<data>
-					AUcMAg==
+					AgUAEAIEACACACACBQBFAgRQiQFHDAI=
 					</data>
 					<key>WakeVerbReinit</key>
 					<true/>
