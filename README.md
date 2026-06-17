@@ -28,6 +28,4 @@
 
 > All tests are based only on the above configuration.
 
-[BigSur (Only tested enter recovery mode)](./BigSur/README.md)
-
 [Monterey](./Monterey/README.md)
